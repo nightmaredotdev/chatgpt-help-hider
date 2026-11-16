@@ -1,0 +1,129 @@
+<!doctype html>
+<!--
+  Negative fixture: the selector must match NOTHING in this document.
+
+  Provenance: every case here is SYNTHETIC. No real markup of other ChatGPT
+  safety/moderation notices was available. The cases are built to probe each
+  part of the selector (wrapper classes, child structure, icon fragment) and the
+  phrase "Help is available" appearing outside the notice.
+
+  Each case is a <section data-case="..."> so failures can be reported by name.
+-->
+<html>
+<head>
+  <!-- Case 6: the phrase inside a script element (real capture had one). -->
+  <script type="application/json" id="hydration-data">{"messages":[{"text":"Help is available"}]}</script>
+</head>
+<body>
+<main>
+
+  <section data-case="user-message-with-phrase">
+    <article data-turn="user">
+      <div data-message-author-role="user">
+        <p>Help is available</p>
+      </div>
+    </article>
+  </section>
+
+  <section data-case="assistant-message-with-phrase">
+    <article data-turn="assistant">
+      <div data-message-author-role="assistant">
+        <div class="markdown">
+          <h3>Help is available</h3>
+          <p>An ordinary reply that happens to use the phrase.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section data-case="other-notice-same-structure-different-icon">
+    <div class="mt-3 flex flex-col gap-2">
+      <div class="flex items-center gap-6 self-start rounded-2xl border border-default px-3 py-2.5 text-sm text-default md:p-4 w-fit">
+        <div class="flex min-w-0 grow items-start gap-3">
+          <svg aria-hidden="true" height="28" viewBox="0 0 28 28" width="28">
+            <use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-warning-light-28"></use>
+          </svg>
+          <div class="min-w-0 grow pt-[2px]">
+            <div data-markdown-text-style="assistant-message"><p>This content may violate our usage policies.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-case="moderation-alert-role">
+    <div role="alert" class="rounded-2xl border px-3 py-2">
+      <svg aria-hidden="true" width="20" height="20"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use></svg>
+      <p>Help is available</p>
+    </div>
+  </section>
+
+  <section data-case="info-icon-in-button">
+    <button type="button" aria-label="More info">
+      <svg aria-hidden="true" width="28" height="28"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use></svg>
+    </button>
+  </section>
+
+  <section data-case="info-icon-in-wrapper-wrong-depth">
+    <div class="mt-3 flex flex-col gap-2">
+      <div class="rounded-2xl border">
+        <svg aria-hidden="true" width="28" height="28"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use></svg>
+        <p>Help is available</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-case="info-icon-nested-deeper">
+    <div class="mt-3 flex flex-col gap-2">
+      <div><div><div><svg aria-hidden="true"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use></svg></div></div></div>
+    </div>
+  </section>
+
+  <section data-case="info-icon-other-size">
+    <div class="mt-3 flex flex-col gap-2">
+      <div class="flex items-center gap-6 self-start rounded-2xl border">
+        <div class="flex min-w-0 grow items-start gap-3">
+          <svg aria-hidden="true" width="20" height="20"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-20"></use></svg>
+          <div class="min-w-0 grow"><p>Some other notice</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-case="wrapper-missing-class">
+    <div class="mt-3 flex flex-col">
+      <div class="flex items-center gap-6 self-start rounded-2xl border">
+        <div class="flex min-w-0 grow items-start gap-3">
+          <svg aria-hidden="true" width="28" height="28"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use></svg>
+          <div class="min-w-0 grow"><p>Help is available</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-case="similar-wrapper-no-icon">
+    <div class="mt-3 flex flex-col gap-2">
+      <div class="flex items-center gap-6 self-start rounded-2xl border border-default px-3 py-2.5 text-sm text-default md:p-4 w-fit">
+        <div class="flex min-w-0 grow items-start gap-3">
+          <div class="min-w-0 grow pt-[2px]">
+            <div data-markdown-text-style="assistant-message"><p>Help is available</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-case="fragment-not-a-suffix">
+    <div class="mt-3 flex flex-col gap-2">
+      <div class="flex items-center gap-6">
+        <div class="flex min-w-0 grow items-start gap-3">
+          <svg aria-hidden="true"><use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28-alt"></use></svg>
+          <div class="min-w-0 grow"><p>Some other notice</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

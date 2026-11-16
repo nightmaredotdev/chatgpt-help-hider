@@ -1,0 +1,75 @@
+<!doctype html>
+<!--
+  Positive fixture: two "Help is available" notices in separate assistant messages.
+
+  Provenance:
+  - The notice wrapper structure (div.mt-3 > card > row > svg/use + text column)
+    is taken from user-supplied outerHTML captured on chatgpt.com.
+  - The notice's inner text and links are SANITISED placeholders.
+  - The surrounding conversation/message markup is SYNTHETIC (the real ancestor
+    chain was not supplied); it only gives the notice a realistic context.
+  - Message ids and the icon asset hash differ between the two instances to
+    show that neither is part of the selector.
+
+  data-expect="hidden" marks elements the selector must match. It is a test
+  marker only and is not part of ChatGPT's markup.
+-->
+<html>
+<body>
+<main>
+  <article data-turn="user" data-message-id="00000000-aaaa-0000-0000-000000000001">
+    <div data-message-author-role="user"><p>[user message removed]</p></div>
+  </article>
+
+  <article data-turn="assistant" data-message-id="00000000-bbbb-0000-0000-000000000002">
+    <div data-message-author-role="assistant">
+      <div class="markdown"><p>[assistant reply removed]</p></div>
+
+      <div class="mt-3 flex flex-col gap-2" data-expect="hidden" id="notice-1">
+        <div class="flex items-center gap-6 self-start rounded-2xl border border-default px-3 py-2.5 text-sm text-default md:p-4 w-fit">
+          <div class="flex min-w-0 grow items-start gap-3">
+            <svg aria-hidden="true" height="28" viewBox="0 0 28 28" width="28">
+              <use href="/cdn/assets/icons-895fa61ee7dda8e2.svg#codex-icon-circle-info-light-28"></use>
+            </svg>
+            <div class="min-w-0 grow pt-[2px]">
+              <div data-markdown-text-style="assistant-message">
+                <p><strong>Help is available</strong></p>
+                <p>[support information removed]</p>
+                <p><a href="#">[link removed]</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article data-turn="user" data-message-id="00000000-cccc-0000-0000-000000000003">
+    <div data-message-author-role="user"><p>[user message removed]</p></div>
+  </article>
+
+  <article data-turn="assistant" data-message-id="00000000-dddd-0000-0000-000000000004">
+    <div data-message-author-role="assistant">
+      <div class="markdown"><p>[assistant reply removed]</p></div>
+
+      <div class="mt-3 flex flex-col gap-2" data-expect="hidden" id="notice-2">
+        <div class="flex items-center gap-6 self-start rounded-2xl border border-default px-3 py-2.5 text-sm text-default md:p-4 w-fit">
+          <div class="flex min-w-0 grow items-start gap-3">
+            <svg aria-hidden="true" height="28" viewBox="0 0 28 28" width="28">
+              <use href="/cdn/assets/icons-0123456789abcdef.svg#codex-icon-circle-info-light-28"></use>
+            </svg>
+            <div class="min-w-0 grow pt-[2px]">
+              <div data-markdown-text-style="assistant-message">
+                <p><strong>Help is available</strong></p>
+                <p>[support information removed]</p>
+                <p><a href="#">[link removed]</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</main>
+</body>
+</html>

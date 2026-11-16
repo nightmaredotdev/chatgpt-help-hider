@@ -1,0 +1,11 @@
+/*
+ * Hides ChatGPT's "Help is available" notice.
+ *
+ * Matches the notice's outer wrapper only when its exact child structure
+ * (wrapper > card > row > svg > use) ends in the circle-info icon fragment.
+ * The icon asset's file name/hash is ignored on purpose; only the fragment id
+ * is matched. The surrounding assistant message is not affected.
+ */
+.mt-3.flex.flex-col.gap-2:has(> div > div > svg use[href$="#codex-icon-circle-info-light-28"]) {
+  display: none !important;
+}

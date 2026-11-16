@@ -1,0 +1,26 @@
+# Dependencies (dev-only tooling, if any is added later)
+node_modules/
+
+# Build / packaging output
+dist/
+web-ext-artifacts/
+*.zip
+*.xpi
+*.crx
+
+# Extension signing keys — never commit
+*.pem
+
+# Test output
+coverage/
+
+# Local environment
+.env
+.env.*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
