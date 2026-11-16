@@ -37,7 +37,7 @@ There's no `content.js`. CSS alone identifies the target, so no JavaScript is ne
 3. Click **Load unpacked** and select `src/`.
 4. After editing files, click the reload icon on the extension card, then reload the ChatGPT tab.
 
-Edge uses the same steps but hasn't been tested.
+Edge uses the same steps.
 
 **Firefox**
 1. Open `about:debugging#/runtime/this-firefox`.
@@ -57,7 +57,7 @@ npm install   # installs jsdom, the only dev dependency
 npm test      # node --test
 ```
 
-At v1.0.0 the suite has 33 tests, all passing.
+As of v1.0.1 the suite has 33 tests, all passing.
 
 - **`selector.test.js`** reads the selector straight from `src/content.css`, applies the stylesheet in jsdom, and checks the following:
   - Both notices in `notice.html` are matched and get computed `display: none`.
@@ -80,10 +80,10 @@ The fixtures' surrounding page markup and all negative cases are synthetic. Only
 npx --yes web-ext lint --source-dir src --no-config-discovery
 ```
 
-This is run on demand and isn't a project dependency. At v1.0.0 it reports:
+This is run on demand and isn't a project dependency. As of v1.0.1 it reports:
 
 - **`ADDON_ID_REQUIRED` (error).** An add-on ID is needed before signing for or submitting to AMO. It isn't needed for loading as a temporary add-on. Choosing a permanent ID is deferred along with marketplace distribution.
-- **Two warnings.** `data_collection_permissions` is recognised from Firefox 140 (Firefox for Android 142), while `strict_min_version` is 128. Older versions ignore the key, so nothing breaks. Raising the minimum is an open decision.
+- **Two warnings.** `data_collection_permissions` is recognised from Firefox 140 (Firefox for Android 142), while `strict_min_version` is 128. **Decision: keep 128.** The key is metadata declaring that no data is collected, not a runtime dependency. Firefox 128–139 doesn't recognise it but still loads the extension. It may show a manifest warning about the unrecognised property. The hiding behaviour doesn't depend on the key. These warnings are expected.
 
 ### Manual checklist (live ChatGPT)
 
@@ -108,7 +108,7 @@ Record the browser name and version, the date and the result of each step.
 | --- | --- |
 | Firefox | Notice hidden. Stays hidden after reload and after switching chats. Rest of the interface intact. Version not recorded. |
 | Chrome | Notice hidden. Surrounding interface intact. Shared manifest loaded. Version not recorded; reload, chat-switch and error-panel checks not reported. |
-| Edge | Not tested. Expected to match Chrome (same Chromium engine and manifest), but unconfirmed. |
+| Edge | Works (confirmed by the maintainer after the v1.0.0 release). Version and individual checklist steps not recorded. |
 
 ### Fixture hygiene
 

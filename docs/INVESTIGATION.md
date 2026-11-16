@@ -1,7 +1,7 @@
 # Technical investigation
 
 This document has two parts:
-- **Final outcome:** what v1.0.0 actually implements, and how each open question from the investigation was resolved.
+- **Final outcome:** what v1.0.0 actually implements (unchanged in v1.0.1), and how each open question from the investigation was resolved.
 - **Original M0 investigation:** preserved as written before the target markup was known. Its proposals, and its "will be verified" statements, are historical. Where they differ from the outcome, the outcome applies.
 
 ## Final outcome (v1.0.0)
@@ -12,7 +12,7 @@ The maintainer supplied DevTools output from live ChatGPT. It showed two notice 
 .mt-3.flex.flex-col.gap-2:has(> div > div > svg use[href$="#codex-icon-circle-info-light-28"]) { display: none !important; }
 ```
 
-The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md](DEVELOPMENT.md#testing)). It has been manually confirmed on live ChatGPT in Firefox and Chrome. Edge hasn't been tested.
+The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md](DEVELOPMENT.md#testing)). It has been manually confirmed on live ChatGPT in Firefox and Chrome. After the v1.0.0 release, the maintainer also confirmed it works in Edge.
 
 ### How the M0 open questions were resolved
 
@@ -23,7 +23,7 @@ The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md
 | Flash of the notice during page load | `run_at: document_start` is set so the stylesheet applies before the page renders. The absence of a flash wasn't specifically reported in manual testing. |
 | Shadow DOM / iframes | Content-script CSS doesn't reach into shadow roots or other frames. The rule works on live ChatGPT, so the notice is in the main document. |
 | `chat.openai.com` | Not included. Only `https://chatgpt.com/*` is matched. The redirect wasn't specifically tested. |
-| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Older versions ignore the key. Raising the minimum is an open decision. The Firefox version used in manual testing wasn't recorded. |
+| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Firefox 128–139 doesn't recognise the key, which only declares that no data is collected, but still loads the extension. It may show a manifest warning about the unrecognised property. **Decided in v1.0.1: keep 128.** The Firefox version used in manual testing wasn't recorded. |
 | Firefox add-on ID | Not set. It's required for AMO signing, not for temporary loading. Deferred with marketplace distribution. |
 | Chrome warning for `browser_specific_settings` | Chrome loaded the shared manifest. Whether it showed the expected non-blocking warning wasn't reported. |
 | Per-browser build step | Not needed. One manifest is shared by all browsers. |

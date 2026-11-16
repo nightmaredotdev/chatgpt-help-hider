@@ -2,7 +2,7 @@
 
 A small, standalone browser extension that hides the **"Help is available"** support notice that ChatGPT sometimes shows in its web interface.
 
-> **Status: v1.0.0.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Firefox and Chrome. All 33 automated tests pass. Edge hasn't been tested. This version is distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace.
+> **Status: v1.0.1.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Chrome, Firefox and Edge. All 33 automated tests pass. Distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace.
 
 ## Purpose
 
@@ -40,13 +40,13 @@ The rule matches the notice's outer wrapper only when its exact child structure 
 | --------------- | ------------------------------ | ------ |
 | Mozilla Firefox | Manifest V3 (WebExtensions)    | Manually tested (loaded locally): notice hidden; stays hidden after reload and switching chats; rest of UI intact |
 | Google Chrome   | Manifest V3                    | Manually tested (loaded unpacked): notice hidden; rest of UI intact |
-| Microsoft Edge  | Manifest V3 (Chromium)         | **Untested.** Expected to behave like Chrome, since it uses the same engine and manifest, but this hasn't been confirmed |
+| Microsoft Edge  | Manifest V3 (Chromium)         | Manually tested: confirmed working |
 
 All three browsers share one manifest and one stylesheet.
 
 ## Installation
 
-v1.0.0 isn't published on the Chrome Web Store, Microsoft Edge Add-ons or Mozilla Add-ons. You install it from a local copy of the source.
+The extension isn't published on the Chrome Web Store, Microsoft Edge Add-ons or Mozilla Add-ons. You install it from a local copy of the source.
 
 **1. Get the source**, in either of these ways:
 
@@ -73,16 +73,16 @@ The extension stays loaded across browser restarts as long as the `src/` directo
 
 A temporary add-on is **removed when Firefox restarts**, and you'll need to repeat these steps after every restart. Standard Firefox only installs signed add-ons permanently, and this release doesn't include a signed add-on.
 
-*Edge (untested)*
+*Edge*
 
-Edge uses the same engine as Chrome, so the Chrome steps are expected to work at `edge://extensions` (**Developer mode**, then **Load unpacked**). This hasn't been tested.
+Follow the Chrome steps at `edge://extensions`: turn on **Developer mode**, click **Load unpacked**, and select the `src/` directory.
 
 **Updating.** Loaded extensions don't update automatically. To install a newer release:
 
 1. Download the new release.
 2. Replace the contents of your existing `src/` directory with the new release's `src/` directory.
 3. Reload the extension:
-   - **Chrome:** click the reload icon on the extension's card in `chrome://extensions`. If you put the new version in a different folder instead, remove the old extension and use **Load unpacked** on the new `src/` directory.
+   - **Chrome / Edge:** click the reload icon on the extension's card in `chrome://extensions` (or `edge://extensions`). If you put the new version in a different folder instead, remove the old extension and use **Load unpacked** on the new `src/` directory.
    - **Firefox:** click **Reload** next to the extension in `about:debugging#/runtime/this-firefox`. If Firefox has restarted since, load `src/manifest.json` again as a temporary add-on.
 
 Then reload any open ChatGPT tabs.
@@ -104,8 +104,8 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the development workflow, tes
 | M0        | Repository foundation and investigation       | Done |
 | M1        | Core extension (manifest, content stylesheet) | Done |
 | M2        | Dynamic UI handling and performance           | Done — CSS-only implementation; no JavaScript or MutationObserver required |
-| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome and Firefox manually tested; Edge untested; marketplace packaging deferred |
-| M4        | Testing and polish                            | Done — 33 automated tests pass, plus Firefox and Chrome manual testing |
+| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome, Firefox and Edge manually tested; marketplace packaging deferred |
+| M4        | Testing and polish                            | Done — 33 automated tests pass, plus manual testing in Chrome, Firefox and Edge |
 | M5        | Release preparation                           | Done for GitHub v1.0.0; browser marketplace distribution deferred |
 
 The milestones were planned before the target markup was known, on the assumption that dynamic content might need a JavaScript observer. The notice turned out to be identifiable with CSS alone, so M2's dynamic handling needed no separate work: a stylesheet handles notices that appear later, navigation and re-renders on its own, with nothing to observe or tune. The automated test suite planned for M4 was also built during M1.
@@ -114,4 +114,4 @@ Marketplace distribution is deferred. That includes Firefox signing, a permanent
 
 ## License
 
-No license has been chosen yet.
+Released under the [MIT License](LICENSE).
