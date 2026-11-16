@@ -15,7 +15,7 @@
 ├── package.json            # dev tooling only (test script, jsdom); the extension has no dependencies
 ├── docs/
 │   ├── DEVELOPMENT.md      # this file
-│   └── INVESTIGATION.md    # M0 technical findings and architecture
+│   └── INVESTIGATION.md    # how the approach was chosen (M0 investigation + final outcome)
 ├── src/                    # the extension itself; load this directory unpacked
 │   ├── manifest.json       # shared manifest (Chrome, Edge, Firefox)
 │   └── content.css         # the single hiding rule
@@ -37,11 +37,14 @@ There's no `content.js`. CSS alone identifies the target, so no JavaScript is ne
 3. Click **Load unpacked** and select `src/`.
 4. After editing files, click the reload icon on the extension card, then reload the ChatGPT tab.
 
+Edge uses the same steps but hasn't been tested.
+
 **Firefox**
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on…** and select `src/manifest.json`.
-3. Temporary add-ons are removed when Firefox restarts.
-4. In Firefox, MV3 site access can be revoked per extension. If nothing is hidden, check the extension's permissions in `about:addons` and make sure access to `chatgpt.com` is allowed.
+3. Temporary add-ons are removed when Firefox restarts. Standard Firefox only installs signed add-ons permanently, and no signed build exists (see the lint note below).
+
+If nothing is hidden in Firefox, check the extension's permissions in `about:addons` and make sure access to `chatgpt.com` is allowed. In MV3, Firefox lets users revoke site access per extension.
 
 ## Testing
 
@@ -53,6 +56,8 @@ Requires Node `^22.22.2 || ^24.15.0 || >=26` (the jsdom requirement).
 npm install   # installs jsdom, the only dev dependency
 npm test      # node --test
 ```
+
+At v1.0.0 the suite has 33 tests, all passing.
 
 - **`selector.test.js`** reads the selector straight from `src/content.css`, applies the stylesheet in jsdom, and checks the following:
   - Both notices in `notice.html` are matched and get computed `display: none`.
@@ -75,11 +80,14 @@ The fixtures' surrounding page markup and all negative cases are synthetic. Only
 npx --yes web-ext lint --source-dir src --no-config-discovery
 ```
 
-This is run on demand and isn't a project dependency. It currently reports `ADDON_ID_REQUIRED` (needed before signing for or submitting to AMO; decision pending). It also warns that `data_collection_permissions` needs Firefox 140 or later, while `strict_min_version` is 128.
+This is run on demand and isn't a project dependency. At v1.0.0 it reports:
+
+- **`ADDON_ID_REQUIRED` (error).** An add-on ID is needed before signing for or submitting to AMO. It isn't needed for loading as a temporary add-on. Choosing a permanent ID is deferred along with marketplace distribution.
+- **Two warnings.** `data_collection_permissions` is recognised from Firefox 140 (Firefox for Android 142), while `strict_min_version` is 128. Older versions ignore the key, so nothing breaks. Raising the minimum is an open decision.
 
 ### Manual checklist (live ChatGPT)
 
-Run this in **each** of Chrome, Edge and Firefox with the extension loaded unpacked. Use a conversation where the "Help is available" notice appears.
+Run this in **each** of Chrome, Edge and Firefox with the extension loaded locally (unpacked in Chrome/Edge, as a temporary add-on in Firefox). Use a conversation where the "Help is available" notice appears.
 
 1. **No extension errors.** The extension card in `chrome://extensions` / `edge://extensions` shows no errors. In Firefox, `about:debugging` shows no errors for the extension. Chrome/Edge may show a warning about the unrecognised `browser_specific_settings` key. That's expected and harmless.
 2. **The notice is hidden.** Open the conversation. The "Help is available" box isn't visible, and it doesn't flash briefly during page load.
@@ -110,4 +118,5 @@ Fixtures are snapshots of ChatGPT's markup. Before committing one, remove conver
 
 - `main` is for releases only. All development happens on `dev`.
 - The maintainer handles all commits, pushes, merges, tags and releases.
+- Releases are published as GitHub Releases, tagged `vX.Y.Z` on `main`. Before a release, set the same version in `src/manifest.json`, `package.json` and `package-lock.json`.
 - Never commit build output, packaged `.zip`/`.xpi`/`.crx` files or signing keys (`*.pem`). `.gitignore` covers these.
