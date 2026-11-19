@@ -1,7 +1,7 @@
 # Technical investigation
 
 This document has two parts:
-- **Final outcome:** what v1.0.0 actually implements (behaviour unchanged in v1.0.1 and v1.0.2), and how each open question from the investigation was resolved.
+- **Final outcome:** what v1.0.0 actually implements (behaviour unchanged in v1.0.1, v1.0.2 and v1.0.3), and how each open question from the investigation was resolved.
 - **Original M0 investigation:** preserved as written before the target markup was known. Its proposals, and its "will be verified" statements, are historical. Where they differ from the outcome, the outcome applies.
 
 ## Final outcome (v1.0.0)
@@ -12,7 +12,7 @@ The maintainer supplied DevTools output from live ChatGPT. It showed two notice 
 .mt-3.flex.flex-col.gap-2:has(> div > div > svg use[href$="#codex-icon-circle-info-light-28"]) { display: none !important; }
 ```
 
-The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md](DEVELOPMENT.md#testing)). It has been manually confirmed on live ChatGPT in Firefox and Chrome. After the v1.0.0 release, the maintainer also confirmed it works in Edge.
+The selector is tested against fixtures (34 automated tests as of v1.0.3; see [DEVELOPMENT.md](DEVELOPMENT.md#testing)). It has been manually confirmed on live ChatGPT in Firefox and Chrome. After the v1.0.0 release, the maintainer also confirmed it works in Edge.
 
 ### How the M0 open questions were resolved
 
@@ -23,7 +23,8 @@ The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md
 | Flash of the notice during page load | `run_at: document_start` is set so the stylesheet applies before the page renders. The absence of a flash wasn't specifically reported in manual testing. |
 | Shadow DOM / iframes | Content-script CSS doesn't reach into shadow roots or other frames. The rule works on live ChatGPT, so the notice is in the main document. |
 | `chat.openai.com` | Not included. Only `https://chatgpt.com/*` is matched. The redirect wasn't specifically tested. |
-| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Firefox 128–139 doesn't recognise the key, which only declares that no data is collected, but still loads the extension. It may show a manifest warning about the unrecognised property. **Decided in v1.0.1: keep 128.** The warning remains in v1.0.2, where it's expected and doesn't block AMO submission. The Firefox version used in manual testing wasn't recorded. |
+| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Firefox 128–139 doesn't recognise the key, which only declares that no data is collected, but still loads the extension. It may show a manifest warning about the unrecognised property. **Decided in v1.0.1: keep 128.** The warning remains in v1.0.2, where it's expected and doesn't block AMO submission. The Firefox version used in manual testing wasn't recorded. From v1.0.3 the desktop warning remains, while Android has its own minimum (see the next row). |
+| Firefox for Android | Not declared in v1.0.0–v1.0.2, so AMO treated the extension as desktop-only. **v1.0.3** adds `browser_specific_settings.gecko_android` with `strict_min_version` 142.0. That's the first Firefox for Android that supports `data_collection_permissions`, and it covers CSS `:has()` (121). This removes the Android lint warning. Manually tested on 2026-11-19 on Firefox for Android 154.0 (`org.mozilla.firefox`), loaded with `web-ext run -t firefox-android` over wireless ADB. See the manual verification record in [DEVELOPMENT.md](DEVELOPMENT.md#manual-verification-record) for what was and wasn't checked. |
 | Firefox add-on ID | Not set in v1.0.0 or v1.0.1. It's required for AMO signing, not for temporary loading. **Set in v1.0.2** to the permanent ID `{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}`, which must stay the same in all future releases. |
 | Chrome warning for `browser_specific_settings` | Chrome loaded the shared manifest. Whether it showed the expected non-blocking warning wasn't reported. |
 | Per-browser build step | Not needed. One manifest is shared by all browsers. |

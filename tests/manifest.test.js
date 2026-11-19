@@ -50,8 +50,19 @@ test('every referenced file exists', () => {
 
 test('Firefox settings declare the permanent add-on ID, no data collection and a minimum version', () => {
   const settings = manifest.browser_specific_settings;
-  assert.deepEqual(Object.keys(settings), ['gecko']);
+  assert.deepEqual(Object.keys(settings), ['gecko', 'gecko_android']);
   assert.equal(settings.gecko.id, '{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}');
   assert.deepEqual(settings.gecko.data_collection_permissions, { required: ['none'] });
   assert.match(settings.gecko.strict_min_version, /^\d+\.0$/);
+});
+
+test('Firefox for Android is declared with a minimum version that supports the manifest', () => {
+  // gecko_android only accepts strict_min_version/strict_max_version; id and
+  // data_collection_permissions live under gecko. 142 is the first Firefox for
+  // Android with data_collection_permissions; it also covers CSS :has() (121),
+  // which the selector needs, and Manifest V3 (109).
+  const android = manifest.browser_specific_settings.gecko_android;
+  assert.deepEqual(Object.keys(android), ['strict_min_version']);
+  assert.match(android.strict_min_version, /^\d+\.0$/);
+  assert.ok(parseInt(android.strict_min_version, 10) >= 142, 'Android minimum must be at least 142.0');
 });

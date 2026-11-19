@@ -2,7 +2,7 @@
 
 A small, standalone browser extension that hides the **"Help is available"** support notice that ChatGPT sometimes shows in its web interface.
 
-> **Status: v1.0.2.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Chrome, Firefox and Edge. All 33 automated tests pass. Distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace. v1.0.2 adds a permanent Firefox add-on ID, which Mozilla Add-ons (AMO) requires. The extension's behaviour is the same as in v1.0.0 and v1.0.1.
+> **Status: v1.0.3.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Chrome, Firefox, Edge and Firefox for Android (154.0). All 34 automated tests pass. Distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace. v1.0.2 added a permanent Firefox add-on ID, which Mozilla Add-ons (AMO) requires. v1.0.3 declares Firefox for Android compatibility (Firefox for Android 142 or later). It has been manually tested on Firefox for Android 154.0. The extension's behaviour is the same as in v1.0.0.
 
 ## Purpose
 
@@ -41,8 +41,13 @@ The rule matches the notice's outer wrapper only when its exact child structure 
 | Mozilla Firefox | Manifest V3 (WebExtensions)    | Manually tested (loaded locally): notice hidden; stays hidden after reload and switching chats; rest of UI intact |
 | Google Chrome   | Manifest V3                    | Manually tested (loaded unpacked): notice hidden; rest of UI intact |
 | Microsoft Edge  | Manifest V3 (Chromium)         | Manually tested: confirmed working |
+| Firefox for Android | Manifest V3 (WebExtensions), Firefox for Android 142 or later | Manually tested on Firefox for Android 154.0 (loaded temporarily with `web-ext run`): notice hidden; stays hidden after reload and switching chats; messages and buttons visible and working; the phrase in an ordinary message stays visible; notice reappears when the extension is disabled |
 
-All three browsers share one manifest and one stylesheet.
+All browsers share one manifest and one stylesheet.
+
+### Firefox for Android
+
+From v1.0.3, the manifest declares Firefox for Android support in `browser_specific_settings.gecko_android`, with a minimum version of 142.0. Without this key, AMO treats an extension as desktop-only. Version 142 is the first Firefox for Android that supports the `data_collection_permissions` declaration, and it also covers the CSS `:has()` selector the rule depends on (Firefox for Android 121). Desktop Firefox keeps its separate minimum of 128.0. It has been manually tested on Firefox for Android 154.0. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#firefox-for-android) for how to test it and what the test covered.
 
 ### Firefox add-on ID
 
@@ -56,7 +61,7 @@ Mozilla requires an ID for Manifest V3 extensions before they can be signed or s
 
 ## Installation
 
-The extension isn't published on the Chrome Web Store, Microsoft Edge Add-ons or Mozilla Add-ons. You install it from a local copy of the source.
+The extension isn't published on the Chrome Web Store, Microsoft Edge Add-ons or Mozilla Add-ons. You install it from a local copy of the source. The steps below are for desktop browsers. There's no Firefox for Android installation path for end users yet.
 
 **1. Get the source**, in either of these ways:
 
@@ -114,8 +119,8 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the development workflow, tes
 | M0        | Repository foundation and investigation       | Done |
 | M1        | Core extension (manifest, content stylesheet) | Done |
 | M2        | Dynamic UI handling and performance           | Done — CSS-only implementation; no JavaScript or MutationObserver required |
-| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome, Firefox and Edge manually tested; permanent Firefox add-on ID added in v1.0.2; marketplace submission not yet done |
-| M4        | Testing and polish                            | Done — 33 automated tests pass, plus manual testing in Chrome, Firefox and Edge |
+| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome, Firefox and Edge manually tested; permanent Firefox add-on ID added in v1.0.2; Firefox for Android compatibility declared in v1.0.3 (manually tested on Firefox for Android 154.0); marketplace submission not yet done |
+| M4        | Testing and polish                            | Done — 34 automated tests pass, plus manual testing in Chrome, Firefox, Edge and Firefox for Android (154.0) |
 | M5        | Release preparation                           | Done for GitHub v1.0.0; browser marketplace distribution deferred |
 
 The milestones were planned before the target markup was known, on the assumption that dynamic content might need a JavaScript observer. The notice turned out to be identifiable with CSS alone, so M2's dynamic handling needed no separate work: a stylesheet handles notices that appear later, navigation and re-renders on its own, with nothing to observe or tune. The automated test suite planned for M4 was also built during M1.
