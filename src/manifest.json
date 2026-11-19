@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT Help Hider",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Hides the \"Help is available\" notice in ChatGPT. No data collection, no network requests.",
   "content_scripts": [
     {
@@ -12,6 +12,7 @@
   ],
   "browser_specific_settings": {
     "gecko": {
+      "id": "{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}",
       "strict_min_version": "128.0",
       "data_collection_permissions": {
         "required": ["none"]

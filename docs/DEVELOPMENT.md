@@ -42,7 +42,7 @@ Edge uses the same steps.
 **Firefox**
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on…** and select `src/manifest.json`.
-3. Temporary add-ons are removed when Firefox restarts. Standard Firefox only installs signed add-ons permanently, and no signed build exists (see the lint note below).
+3. Temporary add-ons are removed when Firefox restarts. Standard Firefox only installs signed add-ons permanently, and no signed build exists yet. v1.0.2 adds the add-on ID that signing requires (see [Firefox add-on ID](#firefox-add-on-id)).
 
 If nothing is hidden in Firefox, check the extension's permissions in `about:addons` and make sure access to `chatgpt.com` is allowed. In MV3, Firefox lets users revoke site access per extension.
 
@@ -57,7 +57,7 @@ npm install   # installs jsdom, the only dev dependency
 npm test      # node --test
 ```
 
-As of v1.0.1 the suite has 33 tests, all passing.
+As of v1.0.2 the suite has 33 tests, all passing.
 
 - **`selector.test.js`** reads the selector straight from `src/content.css`, applies the stylesheet in jsdom, and checks the following:
   - Both notices in `notice.html` are matched and get computed `display: none`.
@@ -68,6 +68,7 @@ As of v1.0.1 the suite has 33 tests, all passing.
   - It's MV3.
   - There's exactly one content stylesheet, matching only `https://chatgpt.com/*`, at `document_start`.
   - There's no JavaScript, no permissions of any kind, no background script and no exposed resources.
+  - The Firefox add-on ID (`browser_specific_settings.gecko.id`) is exactly the permanent ID.
 - **`static.test.js`** checks the following:
   - `src/` contains only `manifest.json` and `content.css`.
   - Neither file contains network APIs, extension APIs, CSS `url()`/`@import`, absolute URLs (other than the match pattern) or analytics references.
@@ -80,10 +81,17 @@ The fixtures' surrounding page markup and all negative cases are synthetic. Only
 npx --yes web-ext lint --source-dir src --no-config-discovery
 ```
 
-This is run on demand and isn't a project dependency. As of v1.0.1 it reports:
+This is run on demand and isn't a project dependency. As of v1.0.2 it reports no errors and two warnings:
 
-- **`ADDON_ID_REQUIRED` (error).** An add-on ID is needed before signing for or submitting to AMO. It isn't needed for loading as a temporary add-on. Choosing a permanent ID is deferred along with marketplace distribution.
-- **Two warnings.** `data_collection_permissions` is recognised from Firefox 140 (Firefox for Android 142), while `strict_min_version` is 128. **Decision: keep 128.** The key is metadata declaring that no data is collected, not a runtime dependency. Firefox 128–139 doesn't recognise it but still loads the extension. It may show a manifest warning about the unrecognised property. The hiding behaviour doesn't depend on the key. These warnings are expected.
+- **No errors.** v1.0.0 and v1.0.1 reported **`ADDON_ID_REQUIRED` (error)** because they had no add-on ID. Mozilla requires one for Manifest V3 extensions before signing or AMO submission, though not for loading as a temporary add-on. v1.0.2 sets the permanent ID (see [Firefox add-on ID](#firefox-add-on-id)), which resolves the error.
+- **Two warnings (expected, non-blocking).** `data_collection_permissions` is recognised from Firefox 140 (Firefox for Android 142), while `strict_min_version` is 128. **Decision: keep 128.** The key is metadata declaring that no data is collected, not a runtime dependency. Firefox 128–139 doesn't recognise it but still loads the extension. It may show a manifest warning about the unrecognised property. The hiding behaviour doesn't depend on the key. These warnings are expected and don't block AMO submission.
+
+### Firefox add-on ID
+
+`src/manifest.json` sets `browser_specific_settings.gecko.id` to the permanent ID `{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}`. v1.0.2 is the first release that includes it.
+
+- **Never change or remove it.** Firefox and AMO identify the add-on by this ID. A different ID would be treated as a separate add-on, and existing installs wouldn't receive updates.
+- Don't generate a new ID or replace it with an email-style ID.
 
 ### Manual checklist (live ChatGPT)
 
@@ -119,4 +127,5 @@ Fixtures are snapshots of ChatGPT's markup. Before committing one, remove conver
 - `main` is for releases only. All development happens on `dev`.
 - The maintainer handles all commits, pushes, merges, tags and releases.
 - Releases are published as GitHub Releases, tagged `vX.Y.Z` on `main`. Before a release, set the same version in `src/manifest.json`, `package.json` and `package-lock.json`.
+- `browser_specific_settings.gecko.id` in `src/manifest.json` is permanent. Never change, remove or replace it in any release.
 - Never commit build output, packaged `.zip`/`.xpi`/`.crx` files or signing keys (`*.pem`). `.gitignore` covers these.

@@ -2,7 +2,7 @@
 
 A small, standalone browser extension that hides the **"Help is available"** support notice that ChatGPT sometimes shows in its web interface.
 
-> **Status: v1.0.1.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Chrome, Firefox and Edge. All 33 automated tests pass. Distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace.
+> **Status: v1.0.2.** CSS-only, with no runtime JavaScript. Manually tested on live ChatGPT in Chrome, Firefox and Edge. All 33 automated tests pass. Distributed through [GitHub Releases](https://github.com/nightmaredotdev/chatgpt-help-hider/releases) only; it isn't on any browser marketplace. v1.0.2 adds a permanent Firefox add-on ID, which Mozilla Add-ons (AMO) requires. The extension's behaviour is the same as in v1.0.0 and v1.0.1.
 
 ## Purpose
 
@@ -43,6 +43,16 @@ The rule matches the notice's outer wrapper only when its exact child structure 
 | Microsoft Edge  | Manifest V3 (Chromium)         | Manually tested: confirmed working |
 
 All three browsers share one manifest and one stylesheet.
+
+### Firefox add-on ID
+
+Starting with v1.0.2, the manifest sets a permanent Firefox (Gecko) add-on ID in `browser_specific_settings.gecko.id`:
+
+```
+{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}
+```
+
+Mozilla requires an ID for Manifest V3 extensions before they can be signed or submitted to AMO. Firefox uses it to identify the extension across updates, so it **must stay the same in every future release**. v1.0.0 and v1.0.1 didn't set an ID. Chrome and Edge ignore this key.
 
 ## Installation
 
@@ -104,13 +114,13 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the development workflow, tes
 | M0        | Repository foundation and investigation       | Done |
 | M1        | Core extension (manifest, content stylesheet) | Done |
 | M2        | Dynamic UI handling and performance           | Done — CSS-only implementation; no JavaScript or MutationObserver required |
-| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome, Firefox and Edge manually tested; marketplace packaging deferred |
+| M3        | Cross-browser compatibility and packaging     | Partially done — Chrome, Firefox and Edge manually tested; permanent Firefox add-on ID added in v1.0.2; marketplace submission not yet done |
 | M4        | Testing and polish                            | Done — 33 automated tests pass, plus manual testing in Chrome, Firefox and Edge |
 | M5        | Release preparation                           | Done for GitHub v1.0.0; browser marketplace distribution deferred |
 
 The milestones were planned before the target markup was known, on the assumption that dynamic content might need a JavaScript observer. The notice turned out to be identifiable with CSS alone, so M2's dynamic handling needed no separate work: a stylesheet handles notices that appear later, navigation and re-renders on its own, with nothing to observe or tune. The automated test suite planned for M4 was also built during M1.
 
-Marketplace distribution is deferred. That includes Firefox signing, a permanent Firefox add-on ID and store packages.
+Marketplace distribution is deferred. v1.0.2 adds the permanent Firefox add-on ID needed for AMO. Firefox signing and store listings haven't been done yet.
 
 ## License
 

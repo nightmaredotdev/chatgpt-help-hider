@@ -1,7 +1,7 @@
 # Technical investigation
 
 This document has two parts:
-- **Final outcome:** what v1.0.0 actually implements (unchanged in v1.0.1), and how each open question from the investigation was resolved.
+- **Final outcome:** what v1.0.0 actually implements (behaviour unchanged in v1.0.1 and v1.0.2), and how each open question from the investigation was resolved.
 - **Original M0 investigation:** preserved as written before the target markup was known. Its proposals, and its "will be verified" statements, are historical. Where they differ from the outcome, the outcome applies.
 
 ## Final outcome (v1.0.0)
@@ -23,8 +23,8 @@ The selector is tested against fixtures (33 automated tests; see [DEVELOPMENT.md
 | Flash of the notice during page load | `run_at: document_start` is set so the stylesheet applies before the page renders. The absence of a flash wasn't specifically reported in manual testing. |
 | Shadow DOM / iframes | Content-script CSS doesn't reach into shadow roots or other frames. The rule works on live ChatGPT, so the notice is in the main document. |
 | `chat.openai.com` | Not included. Only `https://chatgpt.com/*` is matched. The redirect wasn't specifically tested. |
-| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Firefox 128–139 doesn't recognise the key, which only declares that no data is collected, but still loads the extension. It may show a manifest warning about the unrecognised property. **Decided in v1.0.1: keep 128.** The Firefox version used in manual testing wasn't recorded. |
-| Firefox add-on ID | Not set. It's required for AMO signing, not for temporary loading. Deferred with marketplace distribution. |
+| Firefox minimum version | `strict_min_version` stays at 128. `web-ext lint` warns that `data_collection_permissions` needs 140 (Android 142). Firefox 128–139 doesn't recognise the key, which only declares that no data is collected, but still loads the extension. It may show a manifest warning about the unrecognised property. **Decided in v1.0.1: keep 128.** The warning remains in v1.0.2, where it's expected and doesn't block AMO submission. The Firefox version used in manual testing wasn't recorded. |
+| Firefox add-on ID | Not set in v1.0.0 or v1.0.1. It's required for AMO signing, not for temporary loading. **Set in v1.0.2** to the permanent ID `{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}`, which must stay the same in all future releases. |
 | Chrome warning for `browser_specific_settings` | Chrome loaded the shared manifest. Whether it showed the expected non-blocking warning wasn't reported. |
 | Per-browser build step | Not needed. One manifest is shared by all browsers. |
 | Interface languages | The rule doesn't match text, so it's expected to work in any ChatGPT interface language. Only English was tested. |

@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-help-hider",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Development tooling for the ChatGPT Help Hider extension. The extension itself lives in src/ and has no dependencies.",
   "scripts": {

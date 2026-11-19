@@ -48,9 +48,10 @@ test('every referenced file exists', () => {
   }
 });
 
-test('Firefox settings declare no data collection and a minimum version', () => {
+test('Firefox settings declare the permanent add-on ID, no data collection and a minimum version', () => {
   const settings = manifest.browser_specific_settings;
   assert.deepEqual(Object.keys(settings), ['gecko']);
+  assert.equal(settings.gecko.id, '{5a921c4b-e146-45b7-b5f2-2632c0b29fc1}');
   assert.deepEqual(settings.gecko.data_collection_permissions, { required: ['none'] });
   assert.match(settings.gecko.strict_min_version, /^\d+\.0$/);
 });
